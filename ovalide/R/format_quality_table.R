@@ -1,3 +1,5 @@
+## Deprecated
+
 #' @export
 format_quality_table <-  function(nature, finess) {
 

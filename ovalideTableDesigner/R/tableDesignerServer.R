@@ -2,31 +2,50 @@
 tableDesignerServer <- function(id,
                                 table_name,
                                 nature) {
-
-  ovalide::load_ovalide_tables(nature)
-  table <- ovalide::ovalide_table(nature, table_name)
-
-  named_finess <- read_named_finess(nature)
-
-  random_initial_choice <- sample(named_finess, size = 1)
-
+  
+  stopifnot(is.reactive(table_name))
+  stopifnot(is.reactive(nature))
+  
   moduleServer(id, function(input, output, session) {
     
-    ns <- NS(id)
+    observe({
+      req(nature)
+      ovalide::load_ovalide_tables(nature())
+    }
+    )
+    
+    table <- reactive({ovalide::ovalide_table(nature(), table_name())})
+    
+    named_finess <- reactive({read_named_finess(nature())})
+    
+    random_initial_choice <- reactive({sample(named_finess(), size = 1)})
 
-    formating <- read_or_create_formating(table, table_name, nature)
-    r <- do.call(shiny::reactiveValues, formating)
-
-
-    dt_table <- reactive( {
-      req(input$finess)
-      do.call(ovalide::format_table,
-              read_formating_parameters(table, finess, r, input))
+    formating <- reactive(read_or_create_formating(table(),
+                                                   table_name(),
+                                                   nature()))
+    
+    browser()
+    
+    r <- reactiveValues(x = table_name())
+    
+    observe({
+      r <- do.call(shiny::reactiveValues, formating())
     })
 
-    render_table_name(table_name, output)
-    render_finess_input(session, named_finess, random_initial_choice)
-    render_table(dt_table, output)
+    ns <- NS(id)
+
+    dt_table <- reactive( {
+      
+      req(table_name())
+      req(input$finess)
+      
+      do.call(ovalide::format_table,
+              read_formating_parameters(table(), finess, r, input))
+    })
+
+    render_table_name(table_name(), output)
+    render_finess_input(session, named_finess(), random_initial_choice())
+    render_table(dt_table(), output)
     render_translation_inputs(output, r, ns)
     render_rm_filter_list(output, input, r, ns)
     render_description_output(session, r)
@@ -34,15 +53,15 @@ tableDesignerServer <- function(id,
     event_left_col_start(input, r)
     event_translate_first_col_stop(input, r)
     event_undo(input, r)
-    event_proper_left_col(input, r, table)
+    event_proper_left_col(input, r, table())
     event_translate(input, r)
-    event_add_filter(input, r, dt_table)
+    event_add_filter(input, r, dt_table())
     event_rm_col(input, r)
     event_rm_filter(input, r)
-    event_log_current_state(input, r, table)
+    event_log_current_state(input, r, table())
     event_undo_list(input, r)
     event_description_update(input, r)
-    event_save(input, r, table_name, nature)
+    event_save(input, r, table_name(), nature())
   })
 }
 
@@ -92,9 +111,9 @@ render_description_output <- function(session, r) {
 }
 
 render_table_name <- function(table_name, output) {
-  output$table_name <- shiny::renderUI(
+  output$table_name <- shiny::renderUI({
     shiny::wellPanel(shiny::h3(table_name))
-  )
+  })
 }
 
 render_finess_input <- function(session, choices, random_initial_choice) {
@@ -113,7 +132,7 @@ read_formating_parameters <- function(table, finess, r, input) {
 
 render_table <- function(dt_table, output) {
   output$table <- DT::renderDT(
-    dt_table(),
+    dt_table,
     rownames = FALSE,
     selection = list(mode = "single", target = "cell"),
     options   = list(dom  = "t"     , pageLength = -1))
@@ -135,7 +154,6 @@ render_rm_filter_list <- function(output, input, r, ns) {
   output$rm_filter_button_list <- shiny::renderUI({
     req(r$filters)
     choices <- purrr::map(r$filters, ~ .x$select_choice)
-    # browser()
     names(choices) <- purrr::map_chr(r$filters, ~ .x$select_name)
     list(
       shiny::selectInput(ns("rm_filter_choice"), "Filtres", choices),
@@ -231,7 +249,6 @@ event_translate <- function(input, r) {
   observeEvent(input$translate, {
     save_state_to_undo_list(r)
 
-    # browser()
     r$translated_columns <- purrr::map_chr(r$selected_columns, ~ input[[.x]])
 
     req(r$proper_left_col)

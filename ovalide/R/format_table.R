@@ -2,12 +2,15 @@
 #' @export
 format_table <- function(table,
                          finess,
-                         selected_columns,
-                         translated_columns,
-                         filters,
-                         row_names,
-                         rows_translated,
-                         proper_left_col) {
+                         formatting) {
+  
+  selected_columns   <- formatting$selected_columns
+  translated_columns <- formatting$translated_columns
+  filters            <- formatting$filters           
+  row_names          <- formatting$row_names         
+  rows_translated    <- formatting$rows_translated   
+  proper_left_col    <- formatting$proper_left_col   
+  
   (
     table
     %>% filter_on_finess(finess)
@@ -22,7 +25,7 @@ format_table <- function(table,
 }
 
 filter_on_finess <- function(result, finess) {
-    dplyr::filter(result, finess_comp == finess)
+  dplyr::filter(result, finess_comp == finess)
 }
 
 arrange_marked_column <- function(df) {
@@ -47,15 +50,15 @@ rename_1st_col_rows <- function(result,
                                 rows_translated) {
   if (proper_left_col && length(rows_translated) > 0) {
     first_col_name <- selected_columns[1]
-    mapping <- tibble(row_names, rows_translated)
+    mapping <- tibble::tibble(row_names, rows_translated)
     
     join_by <- "row_names"
     names(join_by) <- first_col_name
     (
       result
-      |> left_join(mapping, by = join_by)
-      |> mutate( {{ first_col_name }} := rows_translated)
-      |> select(- rows_translated)
+      |> dplyr::left_join(mapping, by = join_by)
+      |> dplyr::mutate( {{ first_col_name }} := rows_translated)
+      |> dplyr::select(- rows_translated)
     ) -> result
   }
   result
@@ -76,7 +79,7 @@ apply_all_filters <- function(result, filters) {
 }
 
 select_columns <- function(result, selected_columns) {
-    dplyr::select(result, selected_columns)
+    dplyr::select(result, all_of(selected_columns))
 }
 
 rename_cols <- function(result, translated_columns) {

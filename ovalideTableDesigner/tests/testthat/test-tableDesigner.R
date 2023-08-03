@@ -1,37 +1,48 @@
-if(! interactive()) {
-  main <- function() {
-  test_that("server works", {
-    setup_ovalide_data()
-    app <- shinytest::ShinyDriver$new(testApp())
-  })
-  }
-}
 setup_ovalide_data <- function() {
   library(ovalide)
   library(ovalideTableDesigner)
   library(shiny)
   library(tidyverse)
-
-  table_name <<- "T1D2RTP_1"
-  table_name <<- "T1D2DADNP_2"
 }
 
 setup_ovalide_data <- purrr::quietly(setup_ovalide_data)
 
 testApp <- function() {
   ui <- fluidPage(
-    tableDesignerUI("designer", debug = F)
+    shiny::selectInput("champ_select", "Choisir champ",
+                       choices = c("mco", "psy", "ssr", "had")),
+    shiny::selectInput("statut_select", "Choisir statut",
+                       choices = c("dgf", "oqn")),
+    shiny::selectInput("table_select", "Choisir table",
+                       choices = NULL),
+    tableDesignerUI("designer", debug = TRUE)
   )
 
   server <- function(input, output, session) {
 
-    tableDesignerServer("designer", table_name, nature())
+    nature <- reactive({
+      ovalide::nature(input$champ_select, input$statut_select)
+    })
+    
+    observe({
+      req(nature)
+      ovalide::load_ovalide_tables(nature())
+      shiny::updateSelectInput(
+        session,
+        "table_select",
+        choices = names(ovalide::ovalide_tables(nature())))
+    })
+    
+    table_name <- reactive({
+      input$table_select
+    })
+    
+    
+    tableDesignerServer("designer", table_name, nature)
   }
 
   shinyApp(ui, server)
 }
-
-if(! interactive()) main()
 
 ## interactive tests ######
 if (interactive()) {

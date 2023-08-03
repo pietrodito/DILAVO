@@ -4,16 +4,7 @@
 \alias{format_table}
 \title{Format table}
 \usage{
-format_table(
-  table,
-  finess,
-  selected_columns,
-  translated_columns,
-  filters,
-  row_names,
-  rows_translated,
-  proper_left_col
-)
+format_table(table, finess, formatting)
 }
 \description{
 Format table

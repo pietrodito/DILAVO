@@ -1,14 +1,17 @@
 # TODO
 
-+ Is it good to use reactiveFileReader for score and ovalide tables?
+## Pour les filtres du tableDesigner : créer une classe filter
 
-+ Load_score only if null and add force option
+cette classe a deux champs :
++ column
++ value
 
-+ Trouver un moyen de différentier les tables longues des tables larges.
-+ Étudier comment rapprocher les noms de tables des noms de fichiers
+et deux generics select_name, select_choice (pour l'UI du tableDesigner)
 
+## Is it good to use reactiveFileReader for score and ovalide tables?
 
-TODO
-+ add error if no score data found
+## Load_score only if null and add force option, I think it is done (also for ovalide)
+
+## add error if no score data found
 
 
