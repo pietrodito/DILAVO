@@ -9,12 +9,20 @@ setup_ovalide_data <- purrr::quietly(setup_ovalide_data)
 
 testApp <- function() {
   ui <- fluidPage(
-    shiny::selectInput("champ_select", "Choisir champ",
-                       choices = c("mco", "psy", "ssr", "had")),
-    shiny::selectInput("statut_select", "Choisir statut",
-                       choices = c("dgf", "oqn")),
-    shiny::selectInput("table_select", "Choisir table",
-                       choices = NULL),
+    fluidRow(
+      shiny::column(4, 
+                    shiny::selectInput("champ_select", "Choisir champ",
+                                       choices = c("mco", "psy", "ssr", "had"))
+      ),
+      shiny::column(4, 
+                    shiny::selectInput("statut_select", "Choisir statut",
+                                       choices = c("dgf", "oqn"))
+      ),
+      shiny::column(4, 
+                    shiny::selectInput("table_select", "Choisir table",
+                                       choices = NULL)
+      )
+    ),
     tableDesignerUI("designer", debug = TRUE)
   )
 

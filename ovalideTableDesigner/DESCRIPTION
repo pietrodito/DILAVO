@@ -14,7 +14,8 @@ Imports:
     magrittr,
     ovalide,
     readr,
-    shiny
+    shiny,
+    tibble
 RoxygenNote: 7.2.3
 Suggests: 
     testthat (>= 3.0.0)
