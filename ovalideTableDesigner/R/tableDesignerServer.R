@@ -23,15 +23,19 @@ tableDesignerServer <- function(id,
     }
     
     ## TODO remove this line
-    # initial_finess <- reactive("590000600")
+    initial_finess <- reactive("590000600")
     ## TODO remove this line
     
-    table <- reactive({ovalide::ovalide_table(nature(), table_name())})
+    ## Needed to read formatting before computing table
+    waiter <- zero_first_time_then_wait_ms(1000)
     
+    table <- reactive({
+      waiter(reset = TRUE)
+      ovalide::ovalide_table(nature(), table_name())
+    })
 
     formatting <- reactivePoll(
-      ## Needed to read formatting before computing table
-      zero_first_time_then_wait_ms(1000),
+      waiter,
       session,
       checkFunc = function() {
         ovalide::table_format_last_changed(table_name(),
@@ -76,16 +80,16 @@ tableDesignerServer <- function(id,
   })
 }
 
-
 zero_first_time_then_wait_ms <- function(wait_ms) {
   local({
     first_time = TRUE;
-    function() {
-      if(first_time) {
-        0
+    function(reset = FALSE) {
+      if( first_time) {
         first_time <<- FALSE
+        0
       } else {
-        wait_ms
+      if (reset) first_time <<- TRUE
+      wait_ms
       }
     }
   })
@@ -253,12 +257,11 @@ event_undo <- function(input, state) {
 
 event_proper_left_col <- function(input, state, table) {
   observeEvent(state$proper_left_col, {
-    req(input$finess)
-    if ("finess_comp" %in% colnames(table())) {
+    if ( ! is.null(state$selected_columns)) {
       (
         table()
-        %>% dplyr::filter(finess_comp == input$finess)
-        %>% dplyr::pull(state$selected_columns[1])
+        |> dplyr::pull(state$selected_columns[1])
+        |> unique()
       ) -> x
       state$row_names <- x
       if (length(state$rows_translated) == 0) {
@@ -273,11 +276,13 @@ event_translate <- function(input, state) {
     save_state_to_undo_list(state)
 
     state$translated_columns <-
-      purrr::map_chr(state$selected_columns, ~ input[[.x]])
+      purrr::map_chr(state$selected_columns,
+                     ~ input[[as.character(.x)]])
 
     if (state$proper_left_col) {
       state$rows_translated <-
-        purrr::map_chr(state$row_names, ~ input[[.x]])
+        purrr::map_chr(state$row_names,
+                       ~ input[[as.character(.x)]])
     }
   })
 }
@@ -292,7 +297,7 @@ event_add_filter <- function(input, state, dt_table) {
       filter_column <- state$selected_columns[col_nb]
       value <- dt_table()[row_nb, pick_value_column] %>% dplyr::pull()
       state$filters <- c(state$filters, list(list(
-        select_name = paste(filter_column, "<>", value),
+        select_name = paste(filter_column, "≠", value),
         select_choice = paste0(filter_column, "_", value),
         column = filter_column,
         value = value

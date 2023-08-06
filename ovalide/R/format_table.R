@@ -20,6 +20,10 @@ format_table <- function(table,
   proper_left_col    <- formatting$proper_left_col   
   undo_list          <- formatting$undo_list
   
+ if ( ! all(selected_columns %in% colnames(table))) {
+   return(tibble::tibble("table et format désynchronisés"))
+ }
+  
   (
     table
     %>% filter_on_finess(finess)
@@ -49,6 +53,7 @@ rename_1st_col_rows <- function(result,
                                 selected_columns,
                                 row_names,
                                 rows_translated) {
+  
   if (proper_left_col && length(rows_translated) > 0
       && length(rows_translated) == length(row_names)) {
     first_col_name <- selected_columns[1]
