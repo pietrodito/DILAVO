@@ -6,10 +6,12 @@ tableDesignerUI <- function(id, debug = FALSE) {
   shiny::fluidPage(
     define_css(),
 
-    shiny::uiOutput(ns("table_name")),
+    shiny::wellPanel(
+      row_table_name_and_save(ns)
+    ),
 
     shiny::wellPanel(
-      row_finess_and_save(ns),
+      row_finess(ns),
       row_translate(ns),
       row_filter_undo(ns)
     ),
@@ -27,16 +29,18 @@ tableDesignerUI <- function(id, debug = FALSE) {
   )
 }
 
-row_finess_and_save <- function(ns) {
+
+row_table_name_and_save <- function(ns) {
   shiny::fluidRow(
-    tags$form(
-      tags$div(class = "form-group row large",
-               tags$label(class = "col-sm-1 col-form-label", "FINESS"),
-               tags$div(class = "col-sm-4", finess_input(ns)),
-               tags$div(class = "col-sm-2"),
-               tags$div(class = "col-sm-3", save_button(ns))
-      )
-    )
+    shiny::column(6, shiny::uiOutput(ns("table_name"))),
+    shiny::column(6, save_button(ns), class = "normal")
+  )
+}
+    
+
+row_finess <- function(ns) {
+  shiny::fluidRow(
+    shiny::column(12, finess_input(ns))
   )
 }
 
@@ -122,7 +126,9 @@ table_output <- function(ns) {
 }
 
 finess_input <- function(ns) {
- tags$select(id = ns("finess"))
+  shiny::selectInput(ns("finess"),
+                     label = "Établissement",
+                     choices = NULL)
 }
 
 save_button <- function(ns) {

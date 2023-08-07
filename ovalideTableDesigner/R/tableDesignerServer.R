@@ -19,10 +19,6 @@ tableDesignerServer <- function(id,
       initial_finess <- finess
     }
     
-    ## TODO remove this line
-    initial_finess <- reactive("590000600")
-    ## TODO remove this line
-    
     ## Needed to read formatting before computing table
     waiter <- zero_first_time_then_wait_ms(1000)
     
@@ -55,12 +51,12 @@ tableDesignerServer <- function(id,
     
     ns <- NS(id)
 
-    render_translation_inputs(output, state, ns)
-    render_finess_input(session, named_finess, initial_finess)
     render_table_name(table_name, state, formatting, output)
+    render_finess_input(session, named_finess, initial_finess)
     render_table(dt_table, output)
-    render_rm_filter_list(output, input, state, ns)
     render_description_output(session, state)
+    render_rm_filter_list(output, input, state, ns)
+    render_translation_inputs(output, state, ns)
 
     event_translate_first_col_start(input, state)
     event_translate_first_col_stop(input, state)
@@ -134,10 +130,8 @@ render_table_name <- function(table_name,
                    style = "color:red")
      }
      
-    shiny::wellPanel(
-      shiny::h3(table_name()),
-      changes_not_saved
-    )
+      list(shiny::h3(table_name()),
+           changes_not_saved)
   })
 }
 
