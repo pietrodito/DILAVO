@@ -9,10 +9,7 @@ tableDesignerServer <- function(id,
   
   moduleServer(id, function(input, output, session) {
     
-    observe({
-      req(nature)
-      ovalide::load_ovalide_tables(nature())
-    })
+    load_ovalide_tables(nature)
     
     named_finess <- reactive({read_named_finess(nature())})
     
@@ -80,6 +77,13 @@ tableDesignerServer <- function(id,
   })
 }
 
+load_ovalide_tables <- function(nature) {
+  observe({
+    req(nature)
+    ovalide::load_ovalide_tables(nature())
+  })
+}
+    
 zero_first_time_then_wait_ms <- function(wait_ms) {
   local({
     first_time = TRUE;

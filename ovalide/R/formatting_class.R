@@ -26,7 +26,6 @@ format_filepath <- function(table_name, nature) {
   paste0(data_save_dir(nature), "/", table_name, ".format")
 }
 
-
 #' @export
 table_format_last_changed <- function(table_name, nature) {
   if (fs::file_exists(format_filepath(table_name, nature))) {
