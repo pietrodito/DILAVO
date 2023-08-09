@@ -8,7 +8,8 @@ if (interactive()) {
   )
 
   server <- function(input, output, session) {
-    scoreTabSetServer("sts", ovalide::nature("mco", "dgf"))
+    nature <- reactiveVal(ovalide::nature("mco", "dgf"))
+    scoreTabSetServer("sts", nature)
   }
 
   shinyApp(ui, server)

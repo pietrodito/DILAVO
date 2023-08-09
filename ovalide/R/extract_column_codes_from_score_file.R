@@ -10,7 +10,7 @@
 extract_column_codes_from_score_file <- function(csv_filepath) {
   (
     csv_filepath
-    %>% readr::read_csv2()
+    %>% readr::read_csv2(show_col_types = FALSE)
     %>% pick_and_order_proper_columns()
     %>% colnames()
     %>% get_column_codes()

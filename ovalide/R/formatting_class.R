@@ -44,6 +44,7 @@ write_table_format <- function(table_name, nature, formatting) {
 
 #' @export
 read_table_format <- function(table_name, nature) {
+  if ( is.null(table_name)) return(NULL)
   if ( ! fs::file_exists(format_filepath(table_name, nature))) {
     
     create_empty_formatting(table_name, nature)

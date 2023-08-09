@@ -19,7 +19,7 @@ read_score_csv_file <- function(csv_filepath, nature ) {
 
   (
     csv_filepath
-    %>% readr::read_csv2()
+    %>% readr::read_csv2(show_col_types = FALSE)
     %>% pick_and_order_proper_columns()
     %>% nettoie_nom_colonnes()
     %>% readr::write_csv(score_filepath(nature))

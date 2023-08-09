@@ -1,13 +1,13 @@
-#' @export
+# @export
 scoreTabSetServer <- function(id, nature) {
 
   moduleServer(id, function(input, output, session) {
     ns <- NS(id)
 
     output$score <- shiny::renderUI({
-      ovalide::load_score(nature)
+      ovalide::load_score(nature())
       output$table <-
-        DT::renderDT(ovalide::score(nature),
+        DT::renderDT(ovalide::score(nature()),
                      rownames = FALSE,
                      selection = list(mode = "single", target = "cell"),
                      options   = list(dom  = "t"     , pageLength = -1))
@@ -16,30 +16,29 @@ scoreTabSetServer <- function(id, nature) {
 
     r <- reactiveValues()
 
-    r$table_name_in_config <- NULL
+    table_name_in_config <- reactiveVal(NULL)
+    
+    finess <- reactiveVal(NULL)
 
-    observe({
-      req(r$table_name_in_config)
-      ovalideTableDesigner::tableDesignerServer("conf",
-                                                r$table_name_in_config,
-                                                nature)
-      shiny::updateTabsetPanel(session, "tabSet", selected = "Config.")
-    })
+    ovalideTableDesigner::tableDesignerServer(ns("conf"),
+                                              table_name_in_config,
+                                              nature,
+                                              finess)
 
     observe({
       req(input$table_cells_selected)
       row <- input$table_cells_selected[1]
-      r$etablissement <- ovalide::score(nature)[row, 1]
-      r$finess <- ovalide::score(nature)[row, 2]
+      r$etablissement <- ovalide::score(nature())[row, 1]
+      finess(ovalide::score(nature())[row, 2] |> dplyr::pull(Finess))
       r$column_nb <- input$table_cells_selected[2] + 1 #js index starts at 0...
-      r$column_name <- names(ovalide::score(nature))[r$column_nb]
-      r$cell_value <- ovalide::score(nature)[row, r$column_nb]
+      r$column_name <- names(ovalide::score(nature()))[r$column_nb]
+      r$cell_value <- ovalide::score(nature())[row, r$column_nb]
       shiny::updateTabsetPanel(session, "tabSet", selected = "Tableaux")
     })
 
     output$tabs <- shiny::renderUI({
 
-      ovalide::load_ovalide_tables(nature)
+      ovalide::load_ovalide_tables(nature())
 
       observeEvent(input$table_choosen, {
         r$associated_tables <- unique(
@@ -55,7 +54,7 @@ scoreTabSetServer <- function(id, nature) {
         shiny::showModal(shiny::modalDialog(
           shiny::selectInput(ns("table_select"),
                              "Choisissez une table...",
-                             choices = names(ovalide::ovalide_tables(nature))),
+                             choices = names(ovalide::ovalide_tables(nature()))),
           footer = tagList(
             shiny::modalButton("Annuler"),
             shiny::actionButton(ns("table_choosen"), "OK")
@@ -66,7 +65,7 @@ scoreTabSetServer <- function(id, nature) {
       add_config_event <- function(associated_table) {
         to_eval <- glue::glue('
           observeEvent(input$conf_<<associated_table>>, {
-            r$table_name_in_config <- "<<associated_table>>"
+            table_name_in_config("<<associated_table>>")
           })', .open = "<<", .close = ">>")
 
         eval(parse(text = to_eval))
@@ -77,7 +76,7 @@ scoreTabSetServer <- function(id, nature) {
       list(
         shiny::wellPanel(
           shiny::h1(id = ns("etab_label"), r$etablissement),
-          shiny::h2(id = ns("finess_label"), r$finess),
+          shiny::h2(id = ns("finess_label"), finess),
           shiny::h3(id = ns("column_label"), r$column_name),
           shiny::h3(id = ns("value_label"), r$cell_value)
         ),

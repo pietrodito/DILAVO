@@ -2,9 +2,10 @@
 tableDesignerServer <- function(id,
                                 table_name,
                                 nature,
-                                finess = NULL) {
+                                finess = reactive(NULL)) {
   
   stopifnot(is.reactive(table_name))
+  stopifnot(is.reactive(nature))
   stopifnot(is.reactive(nature))
   
   moduleServer(id, function(input, output, session) {
@@ -13,63 +14,52 @@ tableDesignerServer <- function(id,
     
     named_finess <- reactive({read_named_finess(nature())})
     
-    if (is.null(finess)) {
-      initial_finess <- reactive({sample(named_finess(), size = 1)})
-    } else {
-      initial_finess <- finess
-    }
-    
     ## Needed to read formatting before computing table
-    waiter <- zero_first_time_then_wait_ms(1000)
+    ## You have to reset it each time table name changes
+    poll_countdown <- zero_first_time_then_wait_ms(1000)
     
-    table <- reactive({
-      waiter(reset = TRUE)
-      ovalide::ovalide_table(nature(), table_name())
-    })
-
-    formatting <- reactivePoll(
-      waiter,
-      session,
-      checkFunc = function() {
-        ovalide::table_format_last_changed(table_name(),
-                                           nature())
-      },
-      valueFunc = function() {
-        ovalide::read_table_format(table_name(),
-                                   nature())
-      }
-    )
+    table <- make_a_reactive_table(poll_countdown,
+                                   nature,
+                                   table_name)
+    
+    formatting <- make_a_reactive_formatting(poll_countdown,
+                                             session,
+                                             nature,
+                                             table_name)
     
     state <- reactiveValues()
     update_state_from_formatting(state, formatting)
     
-    dt_table <- reactive({
-      ovalide::format_table(table(),
-                            input$finess,
-                            state)
-      })
+    dt_table <- reactive({ovalide::format_table(table(),
+                                                input$finess,
+                                                state)})
     
     ns <- NS(id)
 
     render_table_name(table_name, state, formatting, output)
-    render_finess_input(session, named_finess, initial_finess)
+    render_finess_input(session, named_finess, finess)
     render_table(dt_table, output)
     render_description_output(session, state)
     render_rm_filter_list(output, input, state, ns)
     render_translation_inputs(output, state, ns)
 
-    event_translate_first_col_start(input, state)
-    event_translate_first_col_stop(input, state)
-    event_undo(input, state)
-    event_proper_left_col(input, state, table)
+    event_save(input, state, table_name, nature)
+    
     event_translate(input, state)
-    event_add_filter(input, state, dt_table)
+    event_translate_1st_col_start(input, state)
+    event_translate_1st_col_stop(input, state)
+    event_translate_1st_col(input, state, table)
+    
     event_rm_col(input, state)
-    event_rm_filter(input, state)
+    event_add_filter(input, state, dt_table)
+    event_undo(input, state)
+    
     event_log_current_state(input, state, table)
     event_undo_list(input, state)
+    
     event_description_update(input, state)
-    event_save(input, state, table_name, nature)
+    
+    event_rm_filter(input, state)
   })
 }
 
@@ -93,6 +83,36 @@ zero_first_time_then_wait_ms <- function(wait_ms) {
       }
     }
   })
+}
+
+
+make_a_reactive_table <- function(poll_countdown,
+                                  nature,
+                                  table_name) {
+  reactive({
+    req(table_name())
+    poll_countdown(reset = TRUE)
+    ovalide::ovalide_table(nature(), table_name())
+  })
+}
+
+
+make_a_reactive_formatting <- function(poll_countdown,
+                                       session,
+                                       nature,
+                                       table_name) {
+  reactivePoll(
+    poll_countdown,
+    session,
+    checkFunc = function() {
+      ovalide::table_format_last_changed(table_name(),
+                                         nature())
+    },
+    valueFunc = function() {
+      ovalide::read_table_format(table_name(),
+                                 nature())
+    }
+  )
 }
 
 read_named_finess <- function(nature) {
@@ -137,13 +157,15 @@ render_table_name <- function(table_name,
 
 render_finess_input <- function(session,
                                 named_finess,
-                                random_initial_choice) {
+                                finess) {
+  
+    
   observe({
     req(named_finess)
 
     shiny::updateSelectInput(session, "finess",
                              choices = named_finess(),
-                             selected = isolate(random_initial_choice()))
+                             selected = isolate(finess()))
   })
 }
 
@@ -223,7 +245,7 @@ event_save <- function(input, state, table_name, nature) {
   })
 }
 
-event_translate_first_col_start <- function(input, state) {
+event_translate_1st_col_start <- function(input, state) {
   observeEvent(input$translate_first_col_start, {
     if( ! state$proper_left_col) {
       save_state_to_undo_list(state)
@@ -232,7 +254,7 @@ event_translate_first_col_start <- function(input, state) {
   })
 }
 
-event_translate_first_col_stop <- function(input, state) {
+event_translate_1st_col_stop <- function(input, state) {
   observeEvent(input$translate_first_col_stop, {
     if(state$proper_left_col) {
       save_state_to_undo_list(state)
@@ -253,7 +275,7 @@ event_undo <- function(input, state) {
   })
 }
 
-event_proper_left_col <- function(input, state, table) {
+event_translate_1st_col <- function(input, state, table) {
   observeEvent(state$proper_left_col, {
     if ( ! is.null(state$selected_columns)) {
       (
@@ -271,6 +293,7 @@ event_proper_left_col <- function(input, state, table) {
 
 event_translate <- function(input, state) {
   observeEvent(input$translate, {
+    browser()
     save_state_to_undo_list(state)
 
     state$translated_columns <-

@@ -20,3 +20,27 @@ test_that("charge fichier score champ psy", {
   load_score(nature)
   expect_equal(ncol(the$psy_oqn_scores), 27)
 })
+
+
+if (interactive()) {
+  
+  library(ovalide)
+  
+  champs <- c("mco", "had", "psy", "ssr")
+  statuts <- c("dgf", "oqn")
+  
+  score_file <- "test_data/{champ}_{statut}.csv"
+  zip_file <-
+    "test_data/{champ}.{statut}.2023.4.ovalide-tables-as-csv.zip"
+  
+  read_files <- function(champ, statut) { 
+    nat <- nature(champ, statut)
+    read_score_csv_file( glue::glue(score_file), nat)
+    read_zip_table_file( glue::glue(zip_file), nat)
+  }
+  
+  purrr::map(champs, \(c)
+             purrr::map(statuts, \(s)
+                       read_files(c, s) 
+                                    ))
+}
