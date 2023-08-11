@@ -9,12 +9,10 @@ scoreTabSetUI <- function(id) {
     id = ns("tabSet"),
     shinyjs::useShinyjs(),
     
-    ## TODO faire un module ovalideScore
-    ## qui prend en entrée :
-    ## + un reactive nature
-    ## qui renvoie : 
     
-    tabPanel("Score"   , value = "Score"   , uiOutput(ns("score"))),
+    tabPanel("Score",
+             value = "Score", 
+             ovalideScore::ovalideScoreUI(ns("score"))),
     
     
     ## TODO faire un module ovalideTables qui prend
@@ -27,6 +25,7 @@ scoreTabSetUI <- function(id) {
     tabPanel("Tableaux", value = "Tableaux", uiOutput(ns("tabs" ))),
     
     
+    ## Il prend la nature et le nom de table...
     tabPanel("Config." , value = "Config." ,
              ovalideTableDesigner::tableDesignerUI(ns("conf"), debug = T))
   )

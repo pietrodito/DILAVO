@@ -73,3 +73,4 @@ report_columns_to_select.ovalide_nature <- function(nature) {
 quality_table_name.ovalide_nature <- function(nature) {
   glue::glue("quality_{nature$champ}_table_name")
 }
+  

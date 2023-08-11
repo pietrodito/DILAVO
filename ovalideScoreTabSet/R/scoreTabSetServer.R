@@ -1,19 +1,13 @@
-# @export
+#' @export
 scoreTabSetServer <- function(id, nature) {
+  
+  stopifnot(is.reactive(nature))
 
   moduleServer(id, function(input, output, session) {
     ns <- NS(id)
 
-    output$score <- shiny::renderUI({
-      ovalide::load_score(nature())
-      output$table <-
-        DT::renderDT(ovalide::score(nature()),
-                     rownames = FALSE,
-                     selection = list(mode = "single", target = "cell"),
-                     options   = list(dom  = "t"     , pageLength = -1))
-      DT::DTOutput(ns("table"))
-    })
-
+    score_selected_cell <- ovalideScore::ovalideScoreServer("score", nature)
+    
     r <- reactiveValues()
 
     table_name_in_config <- reactiveVal(NULL)
