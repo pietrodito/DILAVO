@@ -22,7 +22,7 @@ test_that("charge fichier score champ psy", {
 })
 
 
-if (interactive()) {
+if (sys.nframe() == 0) {
   
   library(ovalide)
   

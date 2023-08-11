@@ -1,6 +1,22 @@
-(s1 <- selection())
+test_that("add elt to selection",{
+  
+  (s1 <- selection())
+  expect_equal(class(s1), "selection")
+  
+  (s1 <- add_table(s1, "qwer"))
+  expect_equal(class(s1), "selection")
+  expect_equal(length(s1), 1)
+  
+  (s1 <- add_table(s1, "asdf"))
+  expect_equal(class(s1), "selection")
+  expect_equal(length(s1), 2)
+  
+  (s1 <- add_table(s1, "qwer"))
+  expect_equal(class(s1), "selection")
+  expect_equal(length(s1), 2)
 
-(s1 <- add_table(s1, "qwer"))
-(s1 <- add_table(s1, "asdf"))
-(s1 <- add_table(s1, "qwer"))
-(s1 <- rm_table(s1, "asdf"))
+  (s1 <- rm_table(s1, "asdf"))
+  expect_equal(class(s1), "selection")
+  expect_equal(length(s1), 1)
+})
+
