@@ -2,8 +2,7 @@
 #' @export
 format_table <- function(table,
                          finess,
-                         formatting) {
-  
+                         formatting = NULL) {
   if (is.null(table) || is.null(finess) || is.null(formatting)) {
     return(NULL)
   }
@@ -42,6 +41,15 @@ format_table <- function(table,
   } else {
     return(result)
   }
+}
+
+
+#' @export
+present_table <- function(table_name, nature, finess) {
+  ovalide::load_ovalide_tables(nature)
+  table <- ovalide::ovalide_table(nature, table_name)
+  formatting <- ovalide::read_table_format(table_name, nature)
+  format_table(table, finess, formatting)
 }
 
 filter_on_finess <- function(result, finess) {

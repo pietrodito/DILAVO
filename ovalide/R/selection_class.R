@@ -33,3 +33,23 @@ rm_table.selection <- function(selection, table_name) {
   result <- setdiff(selection, table_name)
   selection(result)
 }
+
+selection_filepath <- function(column_name, nature) {
+  paste0(data_save_dir(nature), "/", column_name, ".selection")
+}
+
+#'   @export
+write_selection <- function(selection, nature, column_name) {
+  readr::write_rds(selection, selection_filepath(column_name, nature))
+}
+
+#' @export
+read_selection <- function(nature, column_name) {
+  file <- selection_filepath(column_name, nature)
+  if (fs::file_exists(file)) {
+    readr::read_rds(file)
+  } else {
+    selection()
+  }
+}
+

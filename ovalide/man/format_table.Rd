@@ -4,7 +4,7 @@
 \alias{format_table}
 \title{Format table}
 \usage{
-format_table(table, finess, formatting)
+format_table(table, finess, formatting = NULL)
 }
 \description{
 Format table

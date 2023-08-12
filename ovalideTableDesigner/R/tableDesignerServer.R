@@ -293,7 +293,6 @@ event_translate_1st_col <- function(input, state, table) {
 
 event_translate <- function(input, state) {
   observeEvent(input$translate, {
-    browser()
     save_state_to_undo_list(state)
 
     state$translated_columns <-
