@@ -1,16 +1,12 @@
 # TODO
 
-## Pour les filtres du tableDesigner : créer une classe filter
+## Pour les tris compatible avec % du tableDesigner :
++ Il faut trier avant de formatter en pourcentage
 
-cette classe a deux champs :
-+ column
-+ value
+## Ajouter un button browser() dans le sidebar
++ see https://engineering-shiny.org/
 
-et deux generics select_name, select_choice (pour l'UI du tableDesigner)
-
-## Is it good to use reactiveFileReader for score and ovalide tables?
-
-## Load_score only if null and add force option, I think it is done (also for ovalide)
+## Pourquoi les menuItem du dashborad déconnent ?
 
 ## add error if no score data found
 
