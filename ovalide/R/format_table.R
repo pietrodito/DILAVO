@@ -52,6 +52,12 @@ present_table <- function(table_name, nature, finess) {
   format_table(table, finess, formatting)
 }
 
+#' @export
+get_description <- function(table_name, nature) {
+  formatting <- ovalide::read_table_format(table_name, nature)
+  formatting$description
+}
+
 filter_on_finess <- function(result, finess) {
   dplyr::filter(result, finess_comp == finess)
 }

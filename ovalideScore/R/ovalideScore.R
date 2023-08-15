@@ -14,7 +14,11 @@ ovalideScoreServer <- function(id, nature) {
     id,
     function(input, output, session) {
       
-      r <- reactiveValues()
+      column_nb     <- reactiveVal(NULL)
+      column_name   <- reactiveVal(NULL)
+      cell_value    <- reactiveVal(NULL)
+      etablissement <- reactiveVal(NULL)
+      finess        <- reactiveVal(NULL)
       
       observe({
         if( ! is.null(nature())) {
@@ -31,20 +35,20 @@ ovalideScoreServer <- function(id, nature) {
       observe({
         req(input$score_table_cells_selected)
         row <- input$score_table_cells_selected[1]
-        r$etablissement <- ovalide::score(nature())[row, 1]
-        r$finess <- ovalide::score(nature())[row, 2] |> dplyr::pull(Finess)
-        r$column_nb <- input$score_table_cells_selected[2] + 1 #JS: [0, 1, ...] 
-        r$column_name <- names(ovalide::score(nature()))[r$column_nb]
-        r$cell_value <- ovalide::score(nature())[row, r$column_nb] |> unlist()
+        etablissement(ovalide::score(nature())[row, 1])
+        finess(ovalide::score(nature())[row, 2] |> dplyr::pull(Finess))
+        column_nb(input$score_table_cells_selected[2] + 1) #JS indexing 0, ...
+        column_name(names(ovalide::score(nature()))[column_nb()])
+        cell_value(ovalide::score(nature())[row, column_nb()] |> unlist())
       })
       
-      reactive({
         list(
-          column_nb   = r$column_nb  ,
-          column_name = r$column_name,
-          cell_value  = r$cell_value , 
-          finess      = r$finess
+          column_nb     = column_nb    ,
+          column_name   = column_name  ,
+          cell_value    = cell_value   , 
+          etablissement = etablissement, 
+          finess        = finess       
+          
         )
-      })
     })
 }

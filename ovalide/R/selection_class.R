@@ -38,7 +38,7 @@ selection_filepath <- function(column_name, nature) {
   paste0(data_save_dir(nature), "/", column_name, ".selection")
 }
 
-#'   @export
+#' @export
 write_selection <- function(selection, nature, column_name) {
   readr::write_rds(selection, selection_filepath(column_name, nature))
 }

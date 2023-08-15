@@ -34,7 +34,7 @@ tableDesignerServer <- function(id,
                                                 input$finess,
                                                 state)})
     
-    ns <- NS(id)
+    ns <- session$ns
 
     render_table_name(table_name, state, formatting, output)
     render_finess_input(session, named_finess, finess)

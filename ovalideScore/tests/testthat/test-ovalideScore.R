@@ -19,7 +19,14 @@ server <- function(input, output, session) {
   out <- ovalideScoreServer("score", nature)
   
   output$out <- shiny::renderText({
-    as.character(out())
+    as.character(
+      paste("Column nb."  , out$column_nb(), 
+            "Column name" , out$column_name(),
+            "Cell value"  , out$cell_value(),
+            "Établissment", out$etablissement(),
+            "FINESS"      , out$finess()
+      )
+    )
   })
 }
 

@@ -3,10 +3,13 @@ library(ovalide)
 library(ovalideTableSelector)
 
 ui <- fluidPage(
-  selectInput("finess", "Finess", c("620100057", "020000063")),
-  selectInput("champ", "Champ", c("mco", "psy")),
-  selectInput("statut", "Statut", c("dgf", "oqn")),
-  selectInput("column_name", "Colonne", LETTERS),
+  fluidRow(
+    column(3, 
+           selectInput("finess", "Finess", c("620100057", "020000063"))),
+    column(3,  selectInput("champ", "Champ", c("mco", "psy"))),
+    column(3,  selectInput("statut", "Statut", c("dgf", "oqn"))),
+    column(3,  selectInput("column_name", "Colonne", LETTERS))
+  ),
   textOutput("table_selector_return"),
   ovalideTableSelectorUI("selector")
 )
@@ -16,6 +19,7 @@ server <- function(input, output, session) {
   nature <- reactiveVal(NULL)
   column_name <- reactiveVal(NULL)
   finess <- reactiveVal(NULL)
+  cell_value <- reactiveVal(10)
     
   observe({
     nature(ovalide::nature(input$champ, input$statut))
@@ -27,7 +31,7 @@ server <- function(input, output, session) {
                                                        finess,
                                                        nature,
                                                        column_name,
-                                                       10)
+                                                       cell_value)
   output$table_selector_return <- renderText({
     as.character(table_selector_return())
   })

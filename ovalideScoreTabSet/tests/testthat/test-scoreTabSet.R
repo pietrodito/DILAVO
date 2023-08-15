@@ -12,5 +12,6 @@ if (interactive()) {
     scoreTabSetServer("sts", nature)
   }
 
+  
   shinyApp(ui, server)
 }
