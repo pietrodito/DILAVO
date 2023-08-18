@@ -1,6 +1,8 @@
 ## app.R ##
 library(shiny)
 library(shinydashboard)
+library(main)
+library(ovalide)
 
 ui <- dashboardPage(
   dashboardHeader(title = "DILAVO"),
@@ -28,21 +30,21 @@ ui <- dashboardPage(
     ),
     tabItems(
       tabItem(tabName = "scores",
-              ovalideScoreTabSet::scoreTabSetUI("tabset")),
+              scoreTabSetUI("tabset")),
       tabItem(tabName = "update",
               h3("Téléversez le fichier..."),
               actionButton("file", "Parcourir..."),
-              shiny::uiOutput("what_file_champ"),
-              shiny::uiOutput("what_file_statut"),
-              shiny::uiOutput("what_file_data")
+              uiOutput("what_file_champ"),
+              uiOutput("what_file_statut"),
+              uiOutput("what_file_data")
               )
     )
   )
 )
 
 server <- function(input, output) {
-  ovalideScoreTabSet::scoreTabSetServer("tabset",
-                                        reactive(ovalide::nature(input$champ,
+  scoreTabSetServer("tabset",
+                                        reactive(nature(input$champ,
                                                                  input$statut)))
   
   output$what_file_champ  <- renderUI({h4(paste("Champ :"  , input$champ))})
