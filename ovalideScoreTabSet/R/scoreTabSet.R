@@ -14,11 +14,9 @@ scoreTabSetUI <- function(id) {
              value = "Score", 
              ovalideScore::ovalideScoreUI(ns("score"))),
     
-    
     tabPanel("Tableaux", value = "tableSelector", 
              ovalideTableSelector::ovalideTableSelectorUI(
                ns("tableSelector"))),
-    
     
     ## Il prend la nature et le nom de table...
     tabPanel("Config." , value = "Config." ,
@@ -45,10 +43,18 @@ scoreTabSetServer <- function(id, nature) {
       ovalideTableSelector::ovalideTableSelectorServer(
         "tableSelector",
         score_server_result$finess,
+        score_server_result$etablissement,
         nature,
         score_server_result$column_name,
         score_server_result$cell_value)
                                                                 
+    
+    observe({
+        req(table_name_in_config())
+        shiny::updateTabsetPanel(session,
+                                 "tabset",
+                                 selected = "tableSelector")
+    })
     
     ovalideTableDesigner::tableDesignerServer(
       "conf",

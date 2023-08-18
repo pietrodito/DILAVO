@@ -8,6 +8,7 @@ ovalideTableSelectorUI <- function(id) {
 #' @export
 ovalideTableSelectorServer <- function(id,
                                        finess,
+                                       etablissement,
                                        nature,
                                        column_name,
                                        cell_value) {
@@ -30,7 +31,7 @@ ovalideTableSelectorServer <- function(id,
       
       selection_update(nature, column_name, selection)
       
-      render_tables(ns, input, output, finess, nature,
+      render_tables(ns, input, output, finess, etablissement, nature,
                     column_name, cell_value, selection, result)
       
       observeEvent(input$table_choosen, {
@@ -57,16 +58,16 @@ selection_update <- function(nature, column_name, selection) {
   })
 }
 
-render_tables <- function(ns, input, output, finess, nature,
+render_tables <- function(ns, input, output, finess, etablissement, nature,
                           column_name, cell_value, selection, result) {
   observe({
     output$selector <- shiny::renderUI({
       list(
         shiny::wellPanel(
-          shiny::h1(id = ns("etab_label")  , finess()     ),
-          shiny::h2(id = ns("finess_label"), finess()     ),
-          shiny::h3(id = ns("column_label"), column_name()),
-          shiny::h3(id = ns("value_label") , cell_value() )
+          shiny::h1(id = ns("etab_label")  , etablissement()),
+          shiny::h2(id = ns("finess_label"), finess()       ),
+          shiny::h3(id = ns("column_label"), column_name()  ),
+          shiny::h3(id = ns("value_label") , cell_value()   )
         ),
         
         shiny::wellPanel(

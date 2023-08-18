@@ -31,8 +31,8 @@ format_table <- function(table,
     %>% apply_all_filters(filters)
     %>% select_columns(selected_columns)
     %>% rename_cols(translated_columns)
-    %>% format_percentage_columns()
     %>% arrange_marked_column()
+    %>% format_percentage_columns()
   ) -> result
   
   if (nrow(result) == 0) {
@@ -86,6 +86,17 @@ rename_1st_col_rows <- function(result,
 }
 
 arrange_marked_column <- function(df) {
+  
+  try_to_convert_to_numeric <- function(df, column) {
+    suppressWarnings(num_col <- as.numeric(df[[ column ]]))
+    if ( any(is.na(num_col)) ) {
+      df
+    } else {
+      df[[ column ]] <- num_col
+      df
+    }
+  }
+  
   count_consecutive_stars <- function(character) {
     (
       character
@@ -96,6 +107,11 @@ arrange_marked_column <- function(df) {
     names(sort(stars_count))
   }
   column_to_arrange_order <- count_consecutive_stars(names(df))
+  
+  for ( col in column_to_arrange_order ) {
+    df <- try_to_convert_to_numeric(df, col)
+  }
+  
   dplyr::arrange(df, dplyr::across(dplyr::all_of(column_to_arrange_order),
                                    dplyr::desc))
 }
