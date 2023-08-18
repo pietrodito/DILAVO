@@ -29,8 +29,7 @@ ui <- dashboardPage(
       tags$style(HTML("[data-toggle] { font-size: 24px; }"))
     ),
     tabItems(
-      tabItem(tabName = "scores",
-              scoreTabSetUI("tabset")),
+      tabItem(tabName = "scores", scoreTabSetUI("tabset")),
       tabItem(tabName = "update",
               h3("Téléversez le fichier..."),
               actionButton("file", "Parcourir..."),
@@ -43,8 +42,7 @@ ui <- dashboardPage(
 )
 
 server <- function(input, output) {
-  scoreTabSetServer("tabset",
-                    reactive(nature(input$champ, input$statut)))
+  scoreTabSetServer("tabset", reactive(nature(input$champ, input$statut)))
   
   output$what_file_champ  <- renderUI({h4(paste("Champ :"  , input$champ))})
   output$what_file_statut <- renderUI({h4(paste("Statut :" , input$statut))})

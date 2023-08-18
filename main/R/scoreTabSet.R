@@ -6,7 +6,7 @@ scoreTabSetUI <- function(id) {
   uiOutput <- shiny::uiOutput
 
   shiny::tabsetPanel(
-    id = ns("tabSet"),
+    id = ns("tabset"),
     shinyjs::useShinyjs(),
     
     
@@ -49,11 +49,17 @@ scoreTabSetServer <- function(id, nature) {
         score_server_result$cell_value)
                                                                 
     
-    observe({
-        req(table_name_in_config())
-        shiny::updateTabsetPanel(session,
-                                 "tabset",
-                                 selected = "tableSelector")
+    observeEvent(c(score_server_result$column_name(),
+                   score_server_result$finess()), {
+                     shiny::updateTabsetPanel(session,
+                                              "tabset",
+                                              selected = "tableSelector")
+                   })
+    
+    observeEvent(table_name_in_config(), {
+      shiny::updateTabsetPanel(session,
+                               "tabset",
+                               selected = "Config.")
     })
     
     tableDesignerServer(
