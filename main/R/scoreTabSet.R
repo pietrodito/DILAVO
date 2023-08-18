@@ -12,15 +12,15 @@ scoreTabSetUI <- function(id) {
     
     tabPanel("Score",
              value = "Score", 
-             ovalideScore::ovalideScoreUI(ns("score"))),
+             ovalideScoreUI(ns("score"))),
     
     tabPanel("Tableaux", value = "tableSelector", 
-             ovalideTableSelector::ovalideTableSelectorUI(
+             ovalideTableSelectorUI(
                ns("tableSelector"))),
     
     ## Il prend la nature et le nom de table...
     tabPanel("Config." , value = "Config." ,
-             ovalideTableDesigner::tableDesignerUI(ns("conf"), debug = T))
+             tableDesignerUI(ns("conf"), debug = T))
   )
 }
 
@@ -36,11 +36,11 @@ scoreTabSetServer <- function(id, nature) {
     
     
     score_server_result <-
-      ovalideScore::ovalideScoreServer("score", nature)
+      ovalideScoreServer("score", nature)
     
 
     table_name_in_config <-
-      ovalideTableSelector::ovalideTableSelectorServer(
+      ovalideTableSelectorServer(
         "tableSelector",
         score_server_result$finess,
         score_server_result$etablissement,
@@ -56,7 +56,7 @@ scoreTabSetServer <- function(id, nature) {
                                  selected = "tableSelector")
     })
     
-    ovalideTableDesigner::tableDesignerServer(
+    tableDesignerServer(
       "conf",
       table_name_in_config,
       nature,

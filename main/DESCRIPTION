@@ -13,8 +13,14 @@ RoxygenNote: 7.2.3
 Imports: 
     dplyr,
     DT,
+    glue,
     ovalide,
-    shiny
+    ovalideScore,
+    ovalideTableDesigner,
+    ovalideTableSelector,
+    purrr,
+    shiny,
+    shinyjs
 Suggests: 
     testthat (>= 3.0.0)
 Config/testthat/edition: 3

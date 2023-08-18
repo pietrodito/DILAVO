@@ -44,8 +44,7 @@ ui <- dashboardPage(
 
 server <- function(input, output) {
   scoreTabSetServer("tabset",
-                                        reactive(nature(input$champ,
-                                                                 input$statut)))
+                    reactive(nature(input$champ, input$statut)))
   
   output$what_file_champ  <- renderUI({h4(paste("Champ :"  , input$champ))})
   output$what_file_statut <- renderUI({h4(paste("Statut :" , input$statut))})
