@@ -30,23 +30,36 @@ ui <- dashboardPage(
     ),
     tabItems(
       tabItem(tabName = "scores", scoreTabSetUI("tabset")),
-      tabItem(tabName = "update",
-              h3("Téléversez le fichier..."),
-              actionButton("file", "Parcourir..."),
-              uiOutput("what_file_champ"),
-              uiOutput("what_file_statut"),
-              uiOutput("what_file_data")
-              )
+      tabItem(tabName = "update", dataUploaderUI("uploader"))
     )
   )
 )
 
-server <- function(input, output) {
-  scoreTabSetServer("tabset", reactive(nature(input$champ, input$statut)))
+server <- function(input, output, session) {
+  last_state_file <- "last_state.rds"
   
-  output$what_file_champ  <- renderUI({h4(paste("Champ :"  , input$champ))})
-  output$what_file_statut <- renderUI({h4(paste("Statut :" , input$statut))})
-  output$what_file_data   <- renderUI({h4(paste("Données :", input$data))})
+  if ( fs::file_exists(last_state_file) ) {
+    last_state <- readr::read_rds(last_state_file)
+    shiny::updateSelectInput(session, "champ", selected = last_state$champ)
+    shiny::updateSelectInput(session, "statut", selected = last_state$statut)
+    shiny::updateSelectInput(session, "data", selected = last_state$data)
+  }
+  
+  observeEvent(c(input$champ, input$statut, input$data), {
+    readr::write_rds(list( champ = input$champ,
+                           statut = input$statut,
+                           data   = input$data),
+                     last_state_file)
+  })
+  
+  
+  scoreTabSetServer("tabset", reactive(nature(input$champ, input$statut)))
+  dataUploaderServer("uploader",
+                     reactive(input$champ),
+                     reactive(input$statut),
+                     reactive(input$data))
+  
+  
 }
 
 shinyApp(ui, server)

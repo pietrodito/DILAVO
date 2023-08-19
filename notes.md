@@ -1,7 +1,5 @@
 # TODO
 
-## Gérer la partie upload
-
 ## Gérer les noms des desitnataires.
 + Update
 + Copy email adressess ready to paste in Outlook
