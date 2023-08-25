@@ -1,6 +1,5 @@
 the <- new.env(parent = emptyenv())
 
-
 table_var <- "{nature$champ}_{nature$statut}_ovalide"
 
 #' @export

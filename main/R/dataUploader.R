@@ -35,6 +35,7 @@ dataUploaderServer <- function(id,
         if ( data() == "Scores" ) {
           ovalide::read_score_csv_file(datapath,
                                        ovalide::nature(champ(), statut()))
+          ovalide::unload_ovalide_scores(nature(champ(), statut()))
         }
         if ( data() == "Tables" ) {
           progressr::withProgressShiny(
@@ -45,6 +46,7 @@ dataUploaderServer <- function(id,
                                            ovalide::nature(champ(),
                                                            statut()))
             })
+          ovalide::unload_ovalide_tables(nature(champ(), statut()))
         }
         if ( data() == "Contacts" ) {
           ovalide::read_emails_from_raw_html_page(nature(), datapath)

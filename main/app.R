@@ -1,4 +1,8 @@
 ## app.R ##
+  
+options(shiny.maxRequestSize=80*1024^2) 
+
+
 library(shiny)
 library(shinydashboard)
 library(main)
