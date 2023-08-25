@@ -1,13 +1,12 @@
 # TODO
 
-## Gérer les noms des desitnataires.
-+ Update
-+ Copy email adressess ready to paste in Outlook
+## Pour les contacts
++ Alerte si un des contacts a disparu de la liste des contacts
++ Alerte si un email du même domaine n'est pas dans la liste
+
 
 ## Ajouter un button browser() dans le sidebar
 + see https://engineering-shiny.org/
-
-## Pourquoi les menuItem du dashborad déconnent ?
 
 ## add error if no score data found
 

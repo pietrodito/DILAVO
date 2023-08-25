@@ -40,13 +40,3 @@ test_that("format table works",{
   expect_equal(output$Var[6], "nb rsa seance")
   
 })
-
-
-(df <- tribble( ~ name, ~ age, ~ free,
-                "qwer",  "15",    "3",
-                "asdf",  "12",   "xx"))
-
-result <- df
-for ( col in c("name", "age", "free") ) {
- result <- try_to_convert_to_numeric(result, col) 
-}

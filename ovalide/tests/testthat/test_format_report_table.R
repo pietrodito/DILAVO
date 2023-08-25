@@ -9,7 +9,6 @@ lespoir    <- "590797387"
 
 format_report_table <- purrr::quietly(format_report_table)
 
-
 test_that("MCO report works", {
   quiet_output <- format_report_table(nature("mco", "dgf"),
                                      finess = ch_guise)

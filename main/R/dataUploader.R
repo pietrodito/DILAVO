@@ -9,6 +9,7 @@ dataUploaderUI <- function(id) {
   )
 }
 
+
 dataUploaderServer <- function(id,
                                champ,
                                statut,
@@ -44,6 +45,9 @@ dataUploaderServer <- function(id,
                                            ovalide::nature(champ(),
                                                            statut()))
             })
+        }
+        if ( data() == "Contacts" ) {
+          ovalide::read_emails_from_raw_html_page(nature(), datapath)
         }
         session$reload()
       })
