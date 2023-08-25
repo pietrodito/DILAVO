@@ -1,14 +1,14 @@
 #' @export
 scoreTabSetUI <- function(id) {
   ns <- NS(id)
-
+  
+  shinyjs::useShinyjs()
+  
   tabPanel <- shiny::tabPanel
   uiOutput <- shiny::uiOutput
 
   shiny::tabsetPanel(
     id = ns("tabset"),
-    shinyjs::useShinyjs(),
-    
     
     tabPanel("Score",
              value = "Score", 

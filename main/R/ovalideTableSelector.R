@@ -83,7 +83,8 @@ render_tables <- function(ns, input, output, finess, etablissement, nature,
             |> purrr::map(\(t)
                           DT::renderDT(t,
                                        rownames = FALSE,
-                                       extensions = c("Buttons", "Select"),
+                                       extensions = c("Buttons"#, "Select"
+                                                      ),
                                        options  = list(dom  = "Bt",
                                                        pageLength = -1,
                                                        buttons = list(

@@ -49,6 +49,8 @@ contactSelectorServer <- function(id, nature, finess) {
             shiny::modalDialog(
               shiny::selectInput(ns("email_to_add"),
                                  "Email",
+                                 multiple = TRUE,
+                                 selectize = TRUE,
                                  choices =
                                    ovalide::all_contacts( nature() )),
               shiny::actionButton(ns("confirm_add"), "Ajoute")
