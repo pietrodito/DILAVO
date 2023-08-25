@@ -76,6 +76,7 @@ contactSelectorServer <- function(id, nature, finess) {
         input$confirm_add, {
           contacts(ovalide::add_contact(contacts(), input$email_to_add))
           ovalide::write_contact(nature(), finess(), contacts())
+          removeModal()
         }
       )
       
@@ -83,6 +84,7 @@ contactSelectorServer <- function(id, nature, finess) {
         input$confirm_rm, {
           contacts(ovalide::rm_contact(contacts(), input$email_to_rm))
           ovalide::write_contact(nature(), finess(), contacts())
+          removeModal()
         }
       )
       
