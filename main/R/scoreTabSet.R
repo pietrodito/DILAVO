@@ -1,4 +1,3 @@
-#' @export
 scoreTabSetUI <- function(id) {
   ns <- NS(id)
   
@@ -24,7 +23,6 @@ scoreTabSetUI <- function(id) {
   )
 }
 
-#' @export
 scoreTabSetServer <- function(id, nature) {
   
   stopifnot(is.reactive(nature))

@@ -1,4 +1,3 @@
-#' @export
 tableDesignerUI <- function(id, debug = FALSE) {
 
   ns <- NS(id)

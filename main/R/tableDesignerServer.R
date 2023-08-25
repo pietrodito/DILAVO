@@ -1,4 +1,3 @@
-#' @export
 tableDesignerServer <- function(id,
                                 table_name,
                                 nature,

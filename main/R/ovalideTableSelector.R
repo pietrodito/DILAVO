@@ -1,11 +1,9 @@
-#' @export
 ovalideTableSelectorUI <- function(id) {
   ns <- NS(id)
   
   shiny::uiOutput(ns("selector"))
 }
 
-#' @export
 ovalideTableSelectorServer <- function(id,
                                        finess,
                                        etablissement,

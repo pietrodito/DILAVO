@@ -1,4 +1,3 @@
-#' @export
 dataUploaderUI <- function(id) {
   ns <- NS(id)
   tagList(

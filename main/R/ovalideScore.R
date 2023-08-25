@@ -1,10 +1,8 @@
-#' @export
 ovalideScoreUI <- function(id) {
   ns <- NS(id)
     DT::DTOutput(ns("score_table"))
 }
 
-#' @export
 ovalideScoreServer <- function(id, nature) {
   
   stopifnot(shiny::is.reactive(nature))
