@@ -13,8 +13,7 @@ Suggests:
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
 Imports: 
-    DBI,
-    dplyr,
+    dplyr,nta
     fs,
     furrr,
     future,
@@ -23,7 +22,6 @@ Imports:
     progressr,
     purrr,
     readr,
-    RSQLite,
     stringr,
     tibble,
     withr

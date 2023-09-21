@@ -9,6 +9,7 @@ contactSelectorUI <- function(id) {
   )
 }
 
+
 contactSelectorServer <- function(id, nature, finess) {
   moduleServer(
     id,
